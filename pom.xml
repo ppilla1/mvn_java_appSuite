@@ -7,6 +7,9 @@
   <groupId>io.explore</groupId>
   <artifactId>mvn_java_appSuite</artifactId>
   <version>1.0</version>
+  <modules>
+    <module>kotlin-java-app</module>
+  </modules>
   <packaging>pom</packaging>
 
   <name>mvn_java_appSuite</name>
@@ -15,7 +18,13 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <kotlin.version>1.7.20</kotlin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+
+    <lombok.version>1.18.24</lombok.version>
+    <log4j2.version>2.11.2</log4j2.version>
+    <junit.version>5.8.2</junit.version>
   </properties>
 </project>
