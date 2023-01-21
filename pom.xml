@@ -9,6 +9,7 @@
   <version>1.0</version>
   <modules>
     <module>kotlin-java-app</module>
+      <module>algo-ds</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -22,6 +23,7 @@
     <maven.compiler.target>17</maven.compiler.target>
     <kotlin.version>1.7.20</kotlin.version>
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <jacoco.version>0.8.8</jacoco.version>
 
     <lombok.version>1.18.24</lombok.version>
     <log4j2.version>2.11.2</log4j2.version>
