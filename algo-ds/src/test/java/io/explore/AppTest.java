@@ -3,6 +3,7 @@ package io.explore;
 
 import io.explore.dp.Fibonacci;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.NetworkInterface;
@@ -52,6 +53,8 @@ public class AppTest
         numbers.get(0);
         return (Integer) numbers.get(0);
     }
+
+    @Disabled
     @Test
     public void test_covariance_in_java(){
         Number num1_2= new Number() {

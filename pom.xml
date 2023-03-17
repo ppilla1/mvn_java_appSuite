@@ -9,7 +9,8 @@
   <version>1.0</version>
   <modules>
     <module>kotlin-java-app</module>
-      <module>algo-ds</module>
+    <module>algo-ds</module>
+    <module>jpa-with-micrometer</module>
   </modules>
   <packaging>pom</packaging>
 
