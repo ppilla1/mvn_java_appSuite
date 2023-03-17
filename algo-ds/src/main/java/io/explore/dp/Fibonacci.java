@@ -1,4 +1,4 @@
-package io.explore;
+package io.explore.dp;
 
 import java.util.Map;
 
@@ -6,7 +6,7 @@ import java.util.Map;
  * Hello world!
  *
  */
-public class DynamicPrograming
+public class Fibonacci
 {
     public static int fib(int n, Map<Integer, Integer> memo) {
         if (n <= 2) return 1;
