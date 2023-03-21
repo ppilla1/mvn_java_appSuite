@@ -110,8 +110,11 @@ public class DbConfig{
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", env.getProperty("app.explore-jpa.hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.hbm2ddl.auto", env.getProperty("app.explore-jpa.hibernate.ddl-auto"));
         properties.put("hibernate.dialect", env.getProperty("app.explore-jpa.hibernate.dialect"));
+        properties.put("hibernate.show_sql", env.getProperty("app.explore-jpa.hibernate.show_sql"));
+        properties.put("hibernate.format_sql", env.getProperty("app.explore-jpa.hibernate.format_sql"));
+        properties.put("hibernate.use_sql_comments", env.getProperty("app.explore-jpa.hibernate.use_sql_comments"));
         em.setJpaPropertyMap(properties);
         return em;
     }
