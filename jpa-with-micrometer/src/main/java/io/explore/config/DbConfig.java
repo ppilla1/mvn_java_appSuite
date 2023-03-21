@@ -4,36 +4,47 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.Map;
 
 @Log4j2
 @Configuration
-public class DbConfig {
+public class DbConfig{
+    private final Environment env;
 
-    @ConfigurationProperties(prefix = "h2.datasource")
+    public DbConfig(Environment env) {
+        this.env = env;
+    }
+
+    @ConfigurationProperties(prefix = "app.explore-jpa.datasource")
     @Bean(name = "dsProperties")
-    Map<String, Object> h2DsProperties(){
-        return new HashMap<>();
+    DataSourceProperties h2DsProperties(){
+        return new DataSourceProperties();
     }
 
     @Bean
     @Primary
-    HikariDataSource dataSource(@Qualifier("dsProperties") Map<String, Object> dsProperties) {
-        Map<String, Object> dsProp = (Map<String, Object>) dsProperties.get("dsProperties");
-        log.info("DB Properties:\n{}", dsProperties.get("dsProperties"));
+    HikariDataSource primaryDataSource(@Qualifier("dsProperties") DataSourceProperties dsProperties) {
         HikariConfig config = new HikariConfig();
         config.setPoolName("JPA_EXPLORE");
-        config.setJdbcUrl(dsProp.get("url").toString());
-        config.setDriverClassName(dsProp.get("driverClassName").toString());
-        config.setUsername(dsProp.get("username").toString());
-        config.setPassword(dsProp.get("password").toString());
+        config.setJdbcUrl(dsProperties.getUrl());
+        config.setDriverClassName(dsProperties.getDriverClassName());
+        config.setUsername(dsProperties.getUsername());
+        config.setPassword(dsProperties.getPassword());
 
         /**
          * This property controls the maximum size that the pool is
@@ -87,7 +98,35 @@ public class DbConfig {
          * This setting only applies when minimumIdle is defined to be less than maximumPoolSize
          */
 
-        HikariDataSource datasource = new HikariDataSource(config);
-        return datasource;
+        return new HikariDataSource(config);
+    }
+
+    @Bean
+    LocalContainerEntityManagerFactoryBean primaryEntityManagerFactoryContainer(@Qualifier("primaryDataSource") DataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource);
+        em.setPackagesToScan(env.getProperty("app.explore-jpa.entity-packagename"));
+        em.setPersistenceUnitName(env.getProperty("app.explore-jpa.persistent-unitname"));
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", env.getProperty("app.explore-jpa.hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.dialect", env.getProperty("app.explore-jpa.hibernate.dialect"));
+        em.setJpaPropertyMap(properties);
+        return em;
+    }
+
+    @Bean
+    @Primary
+    EntityManagerFactory primaryEntityMangerFactory(LocalContainerEntityManagerFactoryBean emfc) {
+        return emfc.getObject();
+    }
+
+    @Bean
+    @Primary
+    public PlatformTransactionManager primeTransactionManager(@Qualifier("primaryEntityMangerFactory") EntityManagerFactory emf) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(emf);
+        return transactionManager;
     }
 }
