@@ -11,6 +11,7 @@
     <module>kotlin-java-app</module>
     <module>algo-ds</module>
     <module>jpa-with-micrometer</module>
+    <module>flow-crm-tutorial</module>
   </modules>
   <packaging>pom</packaging>
 
