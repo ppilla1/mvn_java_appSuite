@@ -20,6 +20,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.Properties;
 
 @Log4j2
 @Configuration
@@ -107,11 +108,13 @@ public class DbConfig{
         em.setDataSource(dataSource);
         em.setPackagesToScan(env.getProperty("app.explore-jpa.entity-packagename"));
         em.setPersistenceUnitName(env.getProperty("app.explore-jpa.persistent-unitname"));
+        Properties jpaProperties = new Properties();
+        jpaProperties.put("javax.persistence.database-product-name", "H2");
+        jpaProperties.put("javax.persistence.schema-generation.database.action", "drop-and-create");
+        em.setJpaProperties(jpaProperties);
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", env.getProperty("app.explore-jpa.hibernate.ddl-auto"));
-        properties.put("hibernate.dialect", env.getProperty("app.explore-jpa.hibernate.dialect"));
         properties.put("hibernate.show_sql", env.getProperty("app.explore-jpa.hibernate.show_sql"));
         properties.put("hibernate.format_sql", env.getProperty("app.explore-jpa.hibernate.format_sql"));
         properties.put("hibernate.use_sql_comments", env.getProperty("app.explore-jpa.hibernate.use_sql_comments"));
