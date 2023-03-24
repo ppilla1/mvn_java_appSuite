@@ -1,18 +1,30 @@
 package io.explore.controller;
 
 import io.explore.model.Foo;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 @Log4j2
 @RestController
 @RequestMapping("/foos")
 class FooController {
+    private final Random random = new Random();
+    private final MeterRegistry registry;
+
+    FooController(MeterRegistry registry) {
+        this.registry = registry;
+    }
 
     @GetMapping
     public List<Foo> findAll() {
@@ -20,6 +32,32 @@ class FooController {
         List<Foo> foos = new ArrayList<>();
         foos.add(new Foo(1l));
         foos.add(new Foo(2l));
+
+        DistributionSummary summary = DistributionSummary.builder("foo.findall.summary")
+                                        .description("Foo find all distribution summary")
+                                        .register(registry);
+
+        summary.record(3);
+        summary.record(4);
+        summary.record(5);
+
+        Timer timer = Timer.builder("foo.findall")
+                .description("Foo find all latency")
+                .register(registry);
+
+        timer.record(2, TimeUnit.SECONDS);
+        timer.record(2, TimeUnit.SECONDS);
+        timer.record(3, TimeUnit.SECONDS);
+        timer.record(4, TimeUnit.SECONDS);
+        timer.record(8, TimeUnit.SECONDS);
+        timer.record(13, TimeUnit.SECONDS);
+
+        // Printing all registered mirometer's
+        registry.getMeters().stream()
+                .forEach(mtr -> {
+                    log.info("{} -> {}", mtr.getId().getName(), mtr.getId().getType());
+                });
+
         return foos;
     }
 

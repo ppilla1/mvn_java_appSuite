@@ -130,6 +130,12 @@ public class DbConfig{
 
     @Bean
     @Primary
+    EntityManager primaryEntityManager(EntityManagerFactory emf) {
+        return emf.createEntityManager();
+    }
+
+    @Bean
+    @Primary
     public PlatformTransactionManager primeTransactionManager(@Qualifier("primaryEntityMangerFactory") EntityManagerFactory emf) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);

@@ -22,10 +22,8 @@ public class JpaWithMicrometerApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(@Qualifier("primaryEntityMangerFactory") EntityManagerFactory emf) {
+	CommandLineRunner commandLineRunner(@Qualifier("primaryEntityManager") EntityManager em) {
 		return args -> {
-			EntityManager em = emf.createEntityManager();
-
 			em.getTransaction().begin();
 
 			Airport henriCoanda = new Airport(1, "Henri Coanda");
@@ -61,7 +59,7 @@ public class JpaWithMicrometerApplication {
 
 			em.getTransaction().commit();
 			log.info("** All Objects persisted **");
-			emf.close();
+			em.close();
 		};
 	}
 }
