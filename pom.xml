@@ -12,6 +12,7 @@
     <module>algo-ds</module>
     <module>jpa-with-micrometer</module>
     <module>flow-crm-tutorial</module>
+      <module>explore-project-reactor</module>
   </modules>
   <packaging>pom</packaging>
 
