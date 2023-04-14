@@ -2,6 +2,7 @@ package io.explore.controller;
 
 import io.explore.model.Foo;
 import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.extern.log4j.Log4j2;
@@ -21,11 +22,19 @@ import java.util.stream.IntStream;
 class FooController {
     private final Random random = new Random();
     private final MeterRegistry registry;
-
+    private final Gauge healthGauge;
     FooController(MeterRegistry registry) {
         this.registry = registry;
+        Random random = new Random();
+        ;
+        this.healthGauge = Gauge.builder("foo.status",
+                        () -> this.health(random.nextInt(0, 2) == 1 ? "UP": "DOWN")? 1 : 0)
+                                .register(registry);
     }
 
+    boolean health(String status) {
+        return status.equalsIgnoreCase("up") ? true : false;
+    }
     @GetMapping
     public List<Foo> findAll() {
         log.info("Finding all foo's");

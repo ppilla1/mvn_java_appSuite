@@ -1,9 +1,12 @@
 package io.explore.config;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.web.embedded.netty.NettyServerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.web.reactive.function.server.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -12,6 +15,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromServerSentEvents;
 
@@ -29,7 +33,6 @@ public class RouteConfig {
                 .filter(new DelayFilter())
                 .build();
     }
-
 
     private static class PersonHandler {
 
