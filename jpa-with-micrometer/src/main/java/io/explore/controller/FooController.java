@@ -20,13 +20,13 @@ import java.util.stream.IntStream;
 @RestController
 @RequestMapping("/foos")
 class FooController {
-    private final Random random = new Random();
     private final MeterRegistry registry;
     private final Gauge healthGauge;
+    private final Random random;
+
     FooController(MeterRegistry registry) {
+        this.random = new Random();
         this.registry = registry;
-        Random random = new Random();
-        ;
         this.healthGauge = Gauge.builder("foo.status",
                         () -> this.health(random.nextInt(0, 2) == 1 ? "UP": "DOWN")? 1 : 0)
                                 .register(registry);
@@ -35,7 +35,14 @@ class FooController {
     boolean health(String status) {
         return status.equalsIgnoreCase("up") ? true : false;
     }
-    @GetMapping
+
+    int randomInt(int min, int max) {
+        return this.random.ints(min, max)
+                .findFirst()
+                .getAsInt();
+    }
+
+    @GetMapping({"/all"})
     public List<Foo> findAll() {
         log.info("Finding all foo's");
         List<Foo> foos = new ArrayList<>();
@@ -44,12 +51,14 @@ class FooController {
 
         DistributionSummary summary = DistributionSummary.builder("foo.findall.summary")
                                         .description("Foo find all distribution summary")
+                                        .publishPercentileHistogram()
+                                        .serviceLevelObjectives(10)
+                                        .minimumExpectedValue(5.0)
+                                        .maximumExpectedValue(50.0)
                                         .register(registry);
-
-        summary.record(3);
-        summary.record(4);
-        summary.record(5);
-
+        int summarySize = randomInt(1, 100);
+        log.info("Summmary number ---> {}", summarySize);
+        summary.record(summarySize);
         Timer timer = Timer.builder("foo.findall")
                 .description("Foo find all latency")
                 .register(registry);
