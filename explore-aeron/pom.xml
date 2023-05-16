@@ -14,6 +14,8 @@
 	<description>Explore Aeron</description>
 	<properties>
 		<java.version>17</java.version>
+		<springdoc-openapi-ui.version>1.6.15</springdoc-openapi-ui.version>
+		<aeron.version>1.41.2</aeron.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -31,8 +33,14 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.15</version>
+			<version>${springdoc-openapi-ui.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.aeron</groupId>
+			<artifactId>aeron-all</artifactId>
+			<version>${aeron.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
