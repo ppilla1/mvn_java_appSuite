@@ -13,6 +13,7 @@
     <module>jpa-with-micrometer</module>
     <module>flow-crm-tutorial</module>
       <module>explore-project-reactor</module>
+      <module>explore-aeron</module>
   </modules>
   <packaging>pom</packaging>
 
