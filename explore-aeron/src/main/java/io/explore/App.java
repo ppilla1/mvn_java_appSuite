@@ -10,7 +10,7 @@ public class App {
 
 	public static void main(String[] args) {
 		SpringApplication.run(App.class, args);
-		log.info("Lets get started with Aeron....");
+		log.info("Aeron insfrastructure started....");
 	}
 
 }

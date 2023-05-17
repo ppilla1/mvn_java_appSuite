@@ -37,13 +37,13 @@ public class AeronConfig {
                     idle.idle();
                 }
                 unsafeBuffer.putStringAscii(0, message);
-                log.info("sending: {}" , () -> message);
+                log.info("Aeron -> sending: [{} " , () -> message + "] to channel [" + channel + "]");
                 while (pub.offer(unsafeBuffer) < 0)
                 {
                     idle.idle();
                 }
                 FragmentHandler handler = (buffer, offset, length, header) ->
-                        log.info("received: {}", () -> buffer.getStringAscii(offset));
+                        log.info("Aeron <- received: [{}", () -> buffer.getStringAscii(offset) + "] from channel [" + channel + "]");
                 while (sub.poll(handler, 1) <= 0)
                 {
                     idle.idle();
