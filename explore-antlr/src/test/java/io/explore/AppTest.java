@@ -2,6 +2,7 @@ package io.explore;
 
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
+import io.antlr.hello.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,6 +19,8 @@ public class AppTest {
     public void testApp()
     {
         log.info("Rigourous Test :-)");
-        assertTrue( true );
+        HelloBaseListener helloBaseListener = new HelloBaseListener();
+
+        assertNotNull( helloBaseListener );
     }
 }

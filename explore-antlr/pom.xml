@@ -17,6 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <antlr.version>4.13.0</antlr.version>
         <ST4.version>4.3.4</ST4.version>
+        <treelayout.version>1.0.3</treelayout.version>
+        <assertj.version>3.24.2</assertj.version>
     </properties>
 
     <dependencies>
@@ -32,6 +34,13 @@
             <groupId>org.antlr</groupId>
             <artifactId>ST4</artifactId>
             <version>${ST4.version}</version>
+        </dependency>
+
+        <!-- https://treelayout.sourceforge.net -->
+        <dependency>
+            <groupId>org.abego.treelayout</groupId>
+            <artifactId>org.abego.treelayout.core</artifactId>
+            <version>${treelayout.version}</version>
         </dependency>
 
         <dependency>
@@ -58,6 +67,14 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -81,9 +98,14 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>4.3</version>
+                <configuration>
+                    <listener>true</listener>
+                    <visitor>true</visitor>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>antlr</id>
+                        <id>antlr-generate</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
