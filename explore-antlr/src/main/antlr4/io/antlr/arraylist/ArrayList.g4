@@ -5,10 +5,11 @@ grammar ArrayList;
     {...}
 */
 
-init: '{' value (',' value)* '}' ;
+init: '{' value (separator value)* '}' ;
 value: init
      | INT
      ;
+separator: ',';
 
 INT: [0-9]+;
 WS: [ \t\n\r]+ -> skip;

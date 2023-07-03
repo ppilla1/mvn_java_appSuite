@@ -58,7 +58,7 @@ public class AppTest {
     public void test_Multi_Translation_Of_Parsed_ArrayListInit(){
         String arrayInitStr = "{1,{2,3}}";
         String transStrONE = "\"\\u0001\"\\u0002\\u0003\"\"";
-        String transStrTWO = "{\"O\"{\"E\"\"O\"}}";
+        String transStrTWO = "{\"O\",{\"E\",\"O\"}}";
 
         // create charstream from String
         CharStream input = CharStreams.fromString(arrayInitStr);

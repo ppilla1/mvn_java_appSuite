@@ -29,6 +29,12 @@ public class ShortToOddEvenStringTranslator extends ArrayListBaseListener implem
     }
 
     @Override
+    public void enterSeparator(ArrayListParser.SeparatorContext ctx) {
+        translation.append(ctx.getText());
+        log.debug("Separator rule enter: {}, {}", ctx.getChildCount(), ctx.getText());
+    }
+
+    @Override
     public void enterValue(ArrayListParser.ValueContext ctx) {
         if (null != ctx.INT()){
             int value = Integer.parseInt(ctx.INT().getText());
