@@ -2,11 +2,15 @@ package io.explore;
 
 import io.antlr.arraylist.ArrayListLexer;
 import io.antlr.arraylist.ArrayListParser;
+import io.explore.translator.arraylistinit.ShortToOddEvenStringTranslator;
+import io.explore.translator.arraylistinit.ShortToUnicodeStringTranslator;
 import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.Test;
 
 
@@ -48,5 +52,47 @@ public class AppTest {
             log.error("{}", e.getMessage(), e);
             assertTrue(false);
         }
+    }
+
+    @Test
+    public void test_Multi_Translation_Of_Parsed_ArrayListInit(){
+        String arrayInitStr = "{1,{2,3}}";
+        String transStrONE = "\"\\u0001\"\\u0002\\u0003\"\"";
+        String transStrTWO = "{\"O\"{\"E\"\"O\"}}";
+
+        // create charstream from String
+        CharStream input = CharStreams.fromString(arrayInitStr);
+
+        // create lexer to feed off of input
+        ArrayListLexer lexer = new ArrayListLexer(input);
+
+        // create a buffer of tokens pulled from the lexer
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // create parser that feeds off the token buffer
+        ArrayListParser parser = new ArrayListParser(tokens);
+
+        // create AST (Abstract Syntax Tree) from parser
+        ParseTree ast = parser.init();
+
+        // create generic parse tree walker that can trigger callbacks in listener
+        ParseTreeWalker walker = new ParseTreeWalker();
+
+        // walk the tree created during the parse, trigger callbacks
+        ShortToUnicodeStringTranslator shortToUnicodeStringTranslator = new ShortToUnicodeStringTranslator();
+        walker.walk(shortToUnicodeStringTranslator, ast);
+
+        ShortToOddEvenStringTranslator shortToOddEvenStringTranslator = new ShortToOddEvenStringTranslator();
+        walker.walk(shortToOddEvenStringTranslator, ast);
+
+        // validation
+        String actualTransONE = shortToUnicodeStringTranslator.translate();
+        log.info("Translation ONE  : {}", actualTransONE);
+        assertEquals(transStrONE, actualTransONE);
+
+        String actualTransTWO = shortToOddEvenStringTranslator.translate();
+        log.info("Translation TWO  : {}", actualTransTWO);
+        assertEquals(transStrTWO, actualTransTWO);
+
     }
 }
